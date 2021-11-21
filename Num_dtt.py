@@ -26,7 +26,7 @@ solution=odeint(F,s0,t)
 
 #Строим графики
 
-omega_a(t)
+#omega_a(t)
 fig1,ax1=plt.subplots()
 ax1.grid()
 ax1.legend()
