@@ -1,14 +1,12 @@
 import numpy as np
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
-import math
-import itertools
-from scipy import integrate
+
 
 #входные параметры
 m=100
-lambd=0.1
-R=100
+lambd=10e4
+R=10
 M=17500
 B_1=350
 B_2=300
@@ -16,9 +14,9 @@ d_alpha_dt=45
 teta=np.array([[((2/5)*m*R**2)/5+B_2,0,0],[0,((2/5)*m*R**2)/5,0],[0,0,B_1+((2/5)*m*R**2)/5]])
 teta_obr=np.linalg.inv(teta)
 
-#начальные условия      P23 V3 o1 P31 V1 o2 P12 V2 o3 P21 V1 o3 P13 V3 o2 P32 V2 o1 P11 V1 o1 P22 V2 o2 P33 V3 o3
-start_solution=np.array([0,0.2,3,0,  0.2,2,  0,0.3, 3, 0,0.2, 3, 0, 0.2,2, 0,0.3, 3,  1,0.2,3, 1,0.3, 2, 1,0.2,3])
-print(len(start_solution))
+#начальные условия      P23 V3 o1 P31 V1 o2 P12 V2 o3 P21 V1 o3 P13 V3 o2 P32 V2 o1 P11 V1 o1 P22 V2 o2 P33 V3 o3  x  y
+start_solution=np.array([0,  0,3,  0, 0.2,2,  0,0.3,3,  0,0.2,3, 0, 0,2, 0, 0.3,3,  1,0.2,3, 1, 0.3,2, 1,   0,   3, 0, 0])
+
 #набор для символа леви-чевита
 help=np.array([[0,1,2],[1,2,0],[2,0,1],[2,1,0],[1,0,2],[0,2,1],[0,0,0],[1,1,1],[2,2,2]])
 #nks=itertools.product('012', repeat=3)
@@ -72,6 +70,10 @@ def Right_part(solution,time):
         F=np.append(F,dpdt)
         F=np.append(F,dvdt)
         F=np.append(F,d_omega_dt)
+    #уравнения (координата)'=V
+    F=np.append(F,solution[4])
+    F=np.append(F,solution[7])
+    
     return F
     '''
     правая часть 1 уравнения
@@ -82,7 +84,7 @@ def Right_part(solution,time):
     return np.array([N выражений из правой части диффур])
     '''
 #Массив времени, где t_0=0, a t_n=любое
-t_n=5
+t_n=20
 time=np.arange(0,t_n,0.1)
 
 #функция odeint, по аналогии с ode45
@@ -161,8 +163,7 @@ for i in range(len(time)):
     omega_2_rot=np.append(omega_2_rot,om_help[1])
     omega_3_rot=np.append(omega_3_rot,om_help[2])
 omega_rot_mod=(omega_1_rot**2+omega_2_rot**2+omega_3_rot**2)**(1/2)
-#Когда найдём \vec(V_c(t)), проинтегриурем покоординатно и получим x(t), y(t), z(t)
-#решаем символьно, экстраполируя V_1(t) V_2(t) V_3(t)........................................
+
 
 
 
@@ -197,6 +198,7 @@ ax3.legend()
 
 #x(t)
 fig4,ax4=plt.subplots()
+ax4.plot(time,solution[:,27],label='X(t)')
 ax4.set_xlabel('time')
 ax4.set_ylabel('X')
 ax4.set_title('Зависимость X коорд центра масс шара от времени')
@@ -205,18 +207,11 @@ ax4.legend()
 
 #y(t)
 fig5,ax5=plt.subplots()
+ax5.plot(time,solution[:,28],label='Y(t)')
 ax5.set_xlabel('time')
 ax5.set_ylabel('Y')
 ax5.set_title('Зависимость Y коорд центра масс шара от времени')
 ax5.grid()
 ax5.legend()
-
-#z(t)
-fig6,ax6=plt.subplots()
-ax6.set_xlabel('time')
-ax6.set_ylabel('Z')
-ax6.set_title('Зависимость Z коорд центра масс шара от времени')
-ax6.grid()
-ax6.legend()
 
 plt.show()
