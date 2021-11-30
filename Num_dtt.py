@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 #входные параметры
 m=100
-lambd=10e4
+lambd=10e-2
 R=10
 M=17500
 B_1=350
