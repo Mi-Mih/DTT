@@ -45,7 +45,8 @@ def first(n,k,s,sol,time):
 def second(n,k,s,sol,time):
     global m
     global lambd
-    dvdt=(1/m)*(-lambd*sol[s+3]-choice_p(sol,k,n)*sol[k]*kron(n,k)*levi(n,k,s))
+    global R
+    dvdt=(1/m)*(-lambd*sol[s+3]+R*lambd*choice_p(sol,k,n)*sol[k]*kron(n,k)*levi(n,k,s))
     return dvdt
 
 def third(n,k,s,sol,time):
